@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cyber Attack Game - Level 0</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #121212;
+            color: #ffffff;
+            text-align: center;
+            padding: 20px;
+        }
+        .email-container {
+            background-color: #1e1e1e;
+            padding: 20px;
+            margin: 20px auto;
+            border-radius: 8px;
+            width: 80%;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+        }
+        .button {
+            display: inline-block;
+            margin: 10px;
+            padding: 10px 20px;
+            font-size: 16px;
+            color: #ffffff;
+            background-color: #007bff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .button:hover {
+            background-color: #0056b3;
+        }
+        .result {
+            font-size: 18px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Cyber Attack Game</h1>
+    <h2>Level 0: Phishing Detection</h2>
+    <div class="email-container" id="email-container">
+        <p id="email-content">Loading email...</p>
+    </div>
+    <button class="button" onclick="checkEmail('phishing')">Phishing</button>
+    <button class="button" onclick="checkEmail('legitimate')">Legitimate</button>
+    <div class="result" id="result"></div>
+
+    <script>
+        const emails = [
+            {
+                content: "Dear User, Your account has been compromised. Click here to reset your password: http://fake-reset.com",
+                type: "phishing"
+            },
+            {
+                content: "Welcome to our service! Please verify your email address by clicking the link: https://secure-verification.com",
+                type: "legitimate"
+            },
+            {
+                content: "Your order #12345 has been shipped. Track it here: https://realstore.com/track",
+                type: "legitimate"
+            },
+            {
+                content: "You have won $1,000,000! Claim your prize by clicking here: http://scam-prize.com",
+                type: "phishing"
+            }
+        ];
+
+        let currentEmail = {};
+
+        // Function to load a random email
+        function loadEmail() {
+            const randomIndex = Math.floor(Math.random() * emails.length);
+            currentEmail = emails[randomIndex];
+            document.getElementById('email-content').innerText = currentEmail.content;
+            document.getElementById('result').innerText = ""; // Clear result
+        }
+
+        // Function to check user's choice
+        function checkEmail(choice) {
+            const result = document.getElementById('result');
+            if (choice === currentEmail.type) {
+                result.innerText = "Correct! Well done.";
+                result.style.color = "#28a745"; // Green
+            } else {
+                result.innerText = "Incorrect! This was a " + currentEmail.type + " email.";
+                result.style.color = "#dc3545"; // Red
+            }
+            setTimeout(loadEmail, 3000); // Load next email after 3 seconds
+        }
+
+        // Load the first email on page load
+        window.onload = loadEmail;
+    </script>
+</body>
+</html>
