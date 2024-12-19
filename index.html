@@ -1,100 +1,124 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cyber Attack Game - Level 0</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #121212;
-            color: #ffffff;
-            text-align: center;
-            padding: 20px;
-        }
-        .email-container {
-            background-color: #1e1e1e;
-            padding: 20px;
-            margin: 20px auto;
-            border-radius: 8px;
-            width: 80%;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
-        }
-        .button {
-            display: inline-block;
-            margin: 10px;
-            padding: 10px 20px;
-            font-size: 16px;
-            color: #ffffff;
-            background-color: #007bff;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        .button:hover {
-            background-color: #0056b3;
-        }
-        .result {
-            font-size: 18px;
-            margin-top: 20px;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cybersecurity Dungeon Adventure</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #222;
+      color: #fff;
+      margin: 0;
+      padding: 0;
+      text-align: center;
+    }
+    .dungeon {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+    .door {
+      background: url('https://i.imgur.com/3W9BmLD.png') no-repeat center;
+      background-size: contain;
+      width: 200px;
+      height: 300px;
+      margin: 20px auto;
+      cursor: pointer;
+      border: 2px solid #fff;
+      border-radius: 10px;
+    }
+    .question-box {
+      display: none;
+      padding: 20px;
+      background: #333;
+      border-radius: 10px;
+      text-align: left;
+    }
+    .question-box input {
+      margin: 10px 0;
+      padding: 10px;
+      font-size: 16px;
+    }
+    .question-box button {
+      padding: 10px 20px;
+      font-size: 16px;
+      background: #4CAF50;
+      border: none;
+      color: #fff;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+    .progress {
+      margin: 20px 0;
+    }
+  </style>
 </head>
 <body>
-    <h1>Cyber Attack Game</h1>
-    <h2>Level 0: Phishing Detection</h2>
-    <div class="email-container" id="email-container">
-        <p id="email-content">Loading email...</p>
+  <div class="dungeon">
+    <h1>Cybersecurity Dungeon Adventure</h1>
+    <p class="progress">Progress: <span id="level">1</span>/3</p>
+    <div id="door" class="door"></div>
+    <div id="question-box" class="question-box">
+      <h3 id="question">Question goes here</h3>
+      <input type="text" id="answer" placeholder="Enter your answer">
+      <button onclick="checkAnswer()">Submit</button>
     </div>
-    <button class="button" onclick="checkEmail('phishing')">Phishing</button>
-    <button class="button" onclick="checkEmail('legitimate')">Legitimate</button>
-    <div class="result" id="result"></div>
+    <h2 id="status"></h2>
+  </div>
+  <script>
+    const levels = [
+      {
+        question: "What is the most common type of phishing attack?",
+        answer: "email"
+      },
+      {
+        question: "Find the flag: What is 2^5? (Format: flag{value})",
+        answer: "flag{32}"
+      },
+      {
+        question: "A DDoS attack targets what part of a system?",
+        answer: "network"
+      }
+    ];
 
-    <script>
-        const emails = [
-            {
-                content: "Dear User, Your account has been compromised. Click here to reset your password: http://fake-reset.com",
-                type: "phishing"
-            },
-            {
-                content: "Welcome to our service! Please verify your email address by clicking the link: https://secure-verification.com",
-                type: "legitimate"
-            },
-            {
-                content: "Your order #12345 has been shipped. Track it here: https://realstore.com/track",
-                type: "legitimate"
-            },
-            {
-                content: "You have won $1,000,000! Claim your prize by clicking here: http://scam-prize.com",
-                type: "phishing"
-            }
-        ];
+    let currentLevel = 0;
 
-        let currentEmail = {};
+    const door = document.getElementById('door');
+    const questionBox = document.getElementById('question-box');
+    const questionEl = document.getElementById('question');
+    const statusEl = document.getElementById('status');
+    const progressEl = document.getElementById('level');
+    const answerInput = document.getElementById('answer');
 
-        // Function to load a random email
-        function loadEmail() {
-            const randomIndex = Math.floor(Math.random() * emails.length);
-            currentEmail = emails[randomIndex];
-            document.getElementById('email-content').innerText = currentEmail.content;
-            document.getElementById('result').innerText = ""; // Clear result
+    door.addEventListener('click', () => {
+      if (currentLevel < levels.length) {
+        questionBox.style.display = 'block';
+        questionEl.textContent = levels[currentLevel].question;
+      } else {
+        statusEl.textContent = "Congratulations! You've rescued the princess! 🎉";
+        door.style.display = 'none';
+      }
+    });
+
+    function checkAnswer() {
+      const userAnswer = answerInput.value.toLowerCase().trim();
+      if (userAnswer === levels[currentLevel].answer) {
+        currentLevel++;
+        progressEl.textContent = currentLevel + 1;
+        questionBox.style.display = 'none';
+        answerInput.value = '';
+        if (currentLevel < levels.length) {
+          statusEl.textContent = "Correct! Click the door to unlock the next challenge.";
+        } else {
+          statusEl.textContent = "You've completed the game and saved the princess!";
         }
-
-        // Function to check user's choice
-        function checkEmail(choice) {
-            const result = document.getElementById('result');
-            if (choice === currentEmail.type) {
-                result.innerText = "Correct! Well done.";
-                result.style.color = "#28a745"; // Green
-            } else {
-                result.innerText = "Incorrect! This was a " + currentEmail.type + " email.";
-                result.style.color = "#dc3545"; // Red
-            }
-            setTimeout(loadEmail, 3000); // Load next email after 3 seconds
-        }
-
-        // Load the first email on page load
-        window.onload = loadEmail;
-    </script>
+      } else {
+        statusEl.textContent = "Incorrect! Try again.";
+      }
+    }
+  </script>
 </body>
 </html>
